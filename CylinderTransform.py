@@ -81,15 +81,13 @@ class CylinderTransformWidget(ScriptedLoadableModuleWidget):
             markupNode.GetNthControlPointPosition(i, xyz_current)
             pointName = markupNode.GetNthControlPointLabel(i) or f"Point_{i+1}"
 
-            # Direction - next, previous or default Point
+            # Direction - next or default Point
             if i < numberOfPoints - 1:
                 xyz_next = [0, 0, 0]
                 markupNode.GetNthControlPointPosition(i + 1, xyz_next)
             elif i > 0:
-                xyz_prev = [0, 0, 0]
-                markupNode.GetNthControlPointPosition(i - 1, xyz_prev)
-                xyz_next = xyz_current
-                xyz_current = xyz_prev
+                xyz_next = [0, 0, 0]
+                markupNode.GetNthControlPointPosition(i, xyz_next)
             else:
                 xyz_next = [xyz_current[0], xyz_current[1], xyz_current[2] + 1]
 
@@ -118,7 +116,7 @@ class CylinderTransformWidget(ScriptedLoadableModuleWidget):
             transformNode.SetMatrixTransformToParent(transform.GetMatrix())
 
             # Create SegmentationNode for each Point
-            segmentationNodeName = f"{pointName}_Segmentation"
+            segmentationNodeName = f"{pointName}_CylinderROI"
             try:
                 segmentationNode = slicer.util.getNode(segmentationNodeName)
             except slicer.util.MRMLNodeNotFoundException:
